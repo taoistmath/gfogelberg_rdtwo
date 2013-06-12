@@ -3,6 +3,7 @@
 $branch = $_GET['gitBranch'];
 $environment = $_GET['environment'];
 $browser = $_GET['browser'];
+$feature = checkmarkValues();
 if ($branch == NULL)
     $branch = 'INFRASYS-1913-Stable'; //Set to same branch as repository.
 $github_loc = 'https://github.com/dandb/helios/blob/'.$branch.'/tools/regression/features/dandb'; //Set url to github folder that contains features
@@ -11,7 +12,7 @@ $local_repo = $behat_loc.'/features/dandb'; //Set to local repo folder that cont
 echo($environment);
 echo($browser);
 echo($branch);
-//var_dump($checked);
+print_r($feature);
 ?>
 
 <html lang="en">
@@ -121,7 +122,7 @@ echo($branch);
 //        listFolderFilesTable($local_repo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity'));
 //        ?>
         <!--    </table>-->
-        <?php listFolderFiles($local_repo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity')); ?>
+        <?php listFolderFiles($local_repo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity')); checkmarkValues()?>
         <div class="span2">
             <label></label>
             <button class="btn btn-primary span2 offset4" type="submit">Start Features</button>
@@ -143,12 +144,20 @@ function listFolderFiles($dir, $exclude)
                     echo '<br /><strong>'.$file . '</strong><br />';
                 } else {
                     //Will open GitHub repo location for branch entered
-                    echo '<input type="checkbox" name="checkbox[]"/>
+                    echo '<input type="checkbox" name="feature[]" value="'.$file.'" >
                         <a href="' . ltrim($github_loc . '/' . $folder . '/' . $file, './') . '">' . $file . '</a><br />';
                 }
                 if (is_dir($dir . '/' . $file)) listFolderFiles($dir . '/' . $file, $exclude);
             }
         }
+    }
+}
+
+function checkmarkValues()
+{
+    if(isset($_GET['feature'])){
+        $feature = $_GET['feature'];
+        return $feature;
     }
 }
 ?>
