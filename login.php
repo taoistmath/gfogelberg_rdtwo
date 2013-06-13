@@ -61,13 +61,13 @@
 
 <div class="container">
 
-    <form class="form-signin">
+    <form id="signin" class="form-signin" name="signin" method="POST" action="setSession.php">
         <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="input-block-level" placeholder="Email address">
+        <input type="text" class="input-block-level" placeholder="username" name="username">
 <!--        <input type="password" class="input-block-level" placeholder="Password">-->
-        <label class="checkbox">
-            <input type="checkbox" value="remember-me"> Remember me
-        </label>
+<!--        <label class="checkbox">-->
+<!--            <input type="checkbox" value="remember-me"> Remember me-->
+<!--        </label>-->
         <button class="btn btn-large btn-primary" type="submit">Sign in</button>
     </form>
 

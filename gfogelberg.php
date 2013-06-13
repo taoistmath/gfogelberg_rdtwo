@@ -1,17 +1,31 @@
 <!DOCTYPE html>
 <?php
+session_start();
+
+if($_SESSION['username'] == NULL)
+    header("Location: http://pherret.local/login.php");
+//Get the branch
 $branch = $_GET['gitBranch'];
-$environment = $_GET['environment'];
-$browser = $_GET['browser'];
-$feature = checkmarkValues();
 if ($branch == NULL)
     $branch = 'INFRASYS-1913-Stable'; //Set to same branch as repository.
+echo($branch);
+
+//Set up paths
 $github_loc = 'https://github.com/dandb/helios/blob/'.$branch.'/tools/regression/features/dandb'; //Set url to github folder that contains features
 $behat_loc = '/var/www/helios/tools/regression'; //Set to location of behat.yml file
 $local_repo = $behat_loc.'/features/dandb'; //Set to local repo folder that contains features
-echo($environment);
-echo($browser);
-echo($branch);
+
+//Get username
+echo $_SESSION['username'];
+
+//Get the environment
+echo $environment = $_GET['environment'];
+
+//Get the browser
+echo $browser = $_GET['browser'];
+
+//Get the selected features
+$feature = checkmarkValues();
 print_r($feature);
 ?>
 
@@ -62,6 +76,7 @@ print_r($feature);
                     <!--                    <li class="active"><a href="#">Home</a></li>-->
                     <!--                    <li><a href="#about">About</a></li>-->
                     <!--                    <li><a href="#contact">Contact</a></li>-->
+                    <li><a href="/logout.php">Sign Out</a></li>
                 </ul>
             </div>
             <!--/.nav-collapse -->
@@ -73,7 +88,7 @@ print_r($feature);
 
     <h1>Bootstrap starter template</h1>
 
-    <form name="branchFilter" method="GET" action="pherret.php">
+    <form id="feature Filter" name="featureFilter" method="GET" action="gfogelberg.php">
         <div class="controls controls-row">
             <div class="span1">
                 <p>Environment</p>
@@ -144,7 +159,7 @@ function listFolderFiles($dir, $exclude)
                     echo '<br /><strong>'.$file . '</strong><br />';
                 } else {
                     //Will open GitHub repo location for branch entered
-                    echo '<input type="checkbox" name="feature[]" value="'.$file.'" >
+                    echo '<input type="checkbox" name="feature[]" id="feature" value="'.$file.'" >
                         <a href="' . ltrim($github_loc . '/' . $folder . '/' . $file, './') . '">' . $file . '</a><br />';
                 }
                 if (is_dir($dir . '/' . $file)) listFolderFiles($dir . '/' . $file, $exclude);
