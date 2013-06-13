@@ -11,12 +11,12 @@ if ($branch == NULL)
 echo($branch);
 
 //Set up paths
-$github_loc = 'https://github.com/dandb/helios/blob/'.$branch.'/tools/regression/features/dandb'; //Set url to github folder that contains features
-$behat_loc = '/var/www/helios/tools/regression'; //Set to location of behat.yml file
-$local_repo = $behat_loc.'/features/dandb'; //Set to local repo folder that contains features
+$githubLoc = 'https://github.com/dandb/helios/blob/'.$branch.'/tools/regression/features/dandb'; //Set url to github folder that contains features
+$behatLoc = 'tools/regression/'; //Set to location of behat.yml file
+$localRepo = 'features/dandb/'; //Set to local repo folder that contains features
 
 //Get username
-echo $_SESSION['username'];
+echo $username = $_SESSION['username'];
 
 //Get the environment
 echo $environment = $_GET['environment'];
@@ -25,8 +25,14 @@ echo $environment = $_GET['environment'];
 echo $browser = $_GET['browser'];
 
 //Get the selected features
-$feature = checkmarkValues();
-print_r($feature);
+$features = checkmarkValues();
+print_r($features);
+
+//Append username to the selected features
+appendFilterToFeature($features);
+
+//Get the execution string
+echo $execution = writeExecutionString();
 ?>
 
 <html lang="en">
@@ -137,7 +143,7 @@ print_r($feature);
 //        listFolderFilesTable($local_repo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity'));
 //        ?>
         <!--    </table>-->
-        <?php listFolderFiles($local_repo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity')); checkmarkValues()?>
+        <?php listFolderFiles($behatLoc.$localRepo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity')); checkmarkValues()?>
         <div class="span2">
             <label></label>
             <button class="btn btn-primary span2 offset4" type="submit">Start Features</button>
@@ -174,6 +180,22 @@ function checkmarkValues()
         $feature = $_GET['feature'];
         return $feature;
     }
+}
+
+function writeExecutionString()
+{
+    global $environment, $browser, $username, $local_repo;
+    $executionString = "bin/behat --profile " . $environment . "_". $browser . " --tags @" . $username . " " . $local_repo;
+
+    return $executionString;
+}
+
+function appendFilterToFeature($features)
+{
+foreach($features as $feature)
+{
+
+}
 }
 ?>
 
