@@ -8,31 +8,36 @@ if($_SESSION['username'] == NULL)
 $branch = $_GET['gitBranch'];
 if ($branch == NULL)
     $branch = 'INFRASYS-1913-Stable'; //Set to same branch as repository.
-echo($branch);
 
 //Set up paths
 $githubLoc = 'https://github.com/dandb/helios/blob/'.$branch.'/tools/regression/features/dandb'; //Set url to github folder that contains features
-$behatLoc = 'tools/regression/'; //Set to location of behat.yml file
+$behatLoc = 'tools/regression/'; //Set to relative path to location of behat.yml file
 $localRepo = 'features/dandb/'; //Set to local repo folder that contains features
 
 //Get username
-echo $username = $_SESSION['username'];
+$username = $_SESSION['username'];
 
 //Get the environment
-echo $environment = $_GET['environment'];
+$environment = strtolower($_GET['environment']);
 
 //Get the browser
-echo $browser = $_GET['browser'];
+$browser = strtolower($_GET['browser']);
 
 //Get the selected features
 $features = checkmarkValues();
-print_r($features);
 
 //Append username to the selected features
 appendFilterToFeature($features);
 
 //Get the execution string
-echo $execution = writeExecutionString();
+$execution = writeExecutionString();
+
+$output = shell_exec("cd " . $behatLoc . " && " . $execution);
+echo "<pre>$output</pre>";
+//var_dump($output);
+
+//Remove username from the selec ted features
+removeFilterFromFeature($features);
 ?>
 
 <html lang="en">
@@ -94,7 +99,7 @@ echo $execution = writeExecutionString();
 
     <h1>Bootstrap starter template</h1>
 
-    <form id="feature Filter" name="featureFilter" method="GET" action="gfogelberg.php">
+    <form id="featureFilter" name="featureFilter" method="GET" action="gfogelberg.php">
         <div class="controls controls-row">
             <div class="span1">
                 <p>Environment</p>
@@ -155,18 +160,22 @@ echo $execution = writeExecutionString();
 <?php
 function listFolderFiles($dir, $exclude)
 {
-    global $github_loc;
+    global $githubLoc;
     $files = scandir($dir);
     $folder = end(explode('/', $dir));
     foreach ($files as $file) {
         if (is_array($exclude) and !in_array($file, $exclude)) {
             if ($file != '.' && $file != '..') {
                 if (is_dir($dir . '/' . $file)) {
-                    echo '<br /><strong>'.$file . '</strong><br />';
+                    echo '<br />
+                    <div name="project" id="project">
+                    <strong>'.$file.'</strong>
+                    </div>
+                    <br />';
                 } else {
                     //Will open GitHub repo location for branch entered
-                    echo '<input type="checkbox" name="feature[]" id="feature" value="'.$file.'" >
-                        <a href="' . ltrim($github_loc . '/' . $folder . '/' . $file, './') . '">' . $file . '</a><br />';
+                    echo '<input type="checkbox" name="feature[]" id="feature" value="'.$folder . '/' .$file.'" >
+                        <a href="' . ltrim($githubLoc . '/' . $folder . '/' . $file, './') . '">' . $file . '</a><br />';
                 }
                 if (is_dir($dir . '/' . $file)) listFolderFiles($dir . '/' . $file, $exclude);
             }
@@ -182,6 +191,28 @@ function checkmarkValues()
     }
 }
 
+function appendFilterToFeature($features)
+{
+    global $behatLoc,$localRepo,$username;
+
+    foreach($features as $feature)
+    {
+        $path_to_file = $behatLoc.$localRepo.$feature;
+        file_put_contents($path_to_file, str_replace("@mink:selenium2","@mink:selenium2 @".$username, file_get_contents($path_to_file)));
+    }
+}
+
+function removeFilterFromFeature($features)
+{
+    global $behatLoc,$localRepo,$username;
+
+    foreach($features as $feature)
+    {
+        $path_to_file = $behatLoc.$localRepo.$feature;
+        file_put_contents($path_to_file, str_replace("@".$username, "",file_get_contents($path_to_file)));
+    }
+}
+
 function writeExecutionString()
 {
     global $environment, $browser, $username, $local_repo;
@@ -190,13 +221,6 @@ function writeExecutionString()
     return $executionString;
 }
 
-function appendFilterToFeature($features)
-{
-foreach($features as $feature)
-{
-
-}
-}
 ?>
 
 <!--function listFolderFilesTable($dir, $exclude)-->
