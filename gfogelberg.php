@@ -30,11 +30,10 @@ $features = checkmarkValues();
 appendFilterToFeature($features);
 
 //Get the execution string
-echo $execution = writeExecutionString();
+$execution = writeExecutionString();
 
 $output = shell_exec("cd " . $behatLoc . " && " . $execution);
 echo "<pre>$output</pre>";
-var_dump($output);
 
 //Remove username from the selected features
 removeFilterFromFeature($features);
