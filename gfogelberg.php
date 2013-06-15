@@ -10,9 +10,9 @@ if ($branch == NULL)
     $branch = 'INFRASYS-1913-Stable'; //Set to same branch as repository.
 
 //Set up paths
-$githubLoc = 'https://github.com/dandb/helios/blob/'.$branch.'/tools/regression/features/dandb'; //Set url to github folder that contains features
+//$githubLoc = 'https://github.com/dandb/helios/blob/'.$branch.'/tools/regression/features/dandb'; //Set url to github folder that contains features
 $behatLoc = 'tools/regression/'; //Set to relative path to location of behat.yml file
-$localRepo = 'features/dandb/'; //Set to local repo folder that contains features
+$localRepo = $behatLoc . 'features/dandb/'; //Set to local repo folder that contains features
 
 //Get username
 $username = $_SESSION['username'];
@@ -30,13 +30,13 @@ $features = checkmarkValues();
 appendFilterToFeature($features);
 
 //Get the execution string
-$execution = writeExecutionString();
+echo $execution = writeExecutionString();
 
 $output = shell_exec("cd " . $behatLoc . " && " . $execution);
 echo "<pre>$output</pre>";
-//var_dump($output);
+var_dump($output);
 
-//Remove username from the selec ted features
+//Remove username from the selected features
 removeFilterFromFeature($features);
 ?>
 
@@ -104,13 +104,13 @@ removeFilterFromFeature($features);
             <div class="span1">
                 <p>Environment</p>
                 <select class="span1" id="environment" name="environment">
-                    <option <?php if ($_GET['environment'] == 'DEV') { ?>selected="true" <?php }; ?>value="DEV">DEV
-                    </option>
+<!--                    <option --><?php //if ($_GET['environment'] == 'DEV') { ?><!--selected="true" --><?php //}; ?><!--value="DEV">DEV-->
+<!--                    </option>-->
                     <option <?php if ($_GET['environment'] == 'QA') { ?>selected="true" <?php }; ?>value="QA">QA
                     </option>
                     <option <?php if ($_GET['environment'] == 'STG') { ?>selected="true" <?php }; ?>value="STG">STG
                     </option>
-                    <option <?php if ($_GET['environment'] == 'PRD') { ?>selected="true" <?php }; ?>value="PRD">PRD
+                    <option <?php if ($_GET['environment'] == 'PROD') { ?>selected="true" <?php }; ?>value="PROD">PRD
                     </option>
                 </select>
             </div>
@@ -148,7 +148,7 @@ removeFilterFromFeature($features);
 //        listFolderFilesTable($local_repo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity'));
 //        ?>
         <!--    </table>-->
-        <?php listFolderFiles($behatLoc.$localRepo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity')); checkmarkValues()?>
+        <?php listFolderFiles($localRepo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity')); checkmarkValues()?>
         <div class="span2">
             <label></label>
             <button class="btn btn-primary span2 offset4" type="submit">Start Features</button>
@@ -160,7 +160,7 @@ removeFilterFromFeature($features);
 <?php
 function listFolderFiles($dir, $exclude)
 {
-    global $githubLoc;
+    global $localRepo;
     $files = scandir($dir);
     $folder = end(explode('/', $dir));
     foreach ($files as $file) {
@@ -175,7 +175,7 @@ function listFolderFiles($dir, $exclude)
                 } else {
                     //Will open GitHub repo location for branch entered
                     echo '<input type="checkbox" name="feature[]" id="feature" value="'.$folder . '/' .$file.'" >
-                        <a href="' . ltrim($githubLoc . '/' . $folder . '/' . $file, './') . '">' . $file . '</a><br />';
+                        <a href="' . ltrim($localRepo . $folder . '/' . $file, './') . '"target="_blank">' . $file . '</a><br />';
                 }
                 if (is_dir($dir . '/' . $file)) listFolderFiles($dir . '/' . $file, $exclude);
             }
