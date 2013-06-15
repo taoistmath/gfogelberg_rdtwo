@@ -14,6 +14,9 @@ if ($branch == NULL)
 $behatLoc = 'tools/regression/'; //Set to relative path to location of behat.yml file
 $localRepo = $behatLoc . 'features/dandb/'; //Set to local repo folder that contains features
 
+//Timestamp for creating HTML file for test results
+$resultsFile = date("YmdHms").".html";
+
 //Get username
 $username = $_SESSION['username'];
 
@@ -33,10 +36,13 @@ appendFilterToFeature($features);
 $execution = writeExecutionString();
 
 $output = shell_exec("cd " . $behatLoc . " && " . $execution);
-echo "<pre>$output</pre>";
+
+//Print the output to a file
+writeResultsToFile();
 
 //Remove username from the selected features
 removeFilterFromFeature($features);
+
 ?>
 
 <html lang="en">
@@ -98,6 +104,10 @@ removeFilterFromFeature($features);
 
     <h1>Bootstrap starter template</h1>
 
+    <div class="results">
+        <?php resultsLink(); ?>
+        </div>
+
     <form id="featureFilter" name="featureFilter" method="GET" action="gfogelberg.php">
         <div class="controls controls-row">
             <div class="span1">
@@ -157,6 +167,23 @@ removeFilterFromFeature($features);
 </div>
 
 <?php
+function writeResultsToFile()
+{
+    global $resultsFile,$output;
+    $fo = fopen($resultsFile,'x');
+
+    fwrite($fo,"<!DOCTYPE html><pre>$output</pre>");
+    fclose($fo);
+
+}
+
+function resultsLink()
+{
+    global $resultsFile;
+    echo "<a href='".$resultsFile."' target='_blank'>Link to Results</a>";
+
+}
+
 function listFolderFiles($dir, $exclude)
 {
     global $localRepo;
@@ -192,22 +219,22 @@ function checkmarkValues()
 
 function appendFilterToFeature($features)
 {
-    global $behatLoc,$localRepo,$username;
+    global $localRepo,$username;
 
     foreach($features as $feature)
     {
-        $path_to_file = $behatLoc.$localRepo.$feature;
+        $path_to_file = $localRepo.$feature;
         file_put_contents($path_to_file, str_replace("@mink:selenium2","@mink:selenium2 @".$username, file_get_contents($path_to_file)));
     }
 }
 
 function removeFilterFromFeature($features)
 {
-    global $behatLoc,$localRepo,$username;
+    global $localRepo,$username;
 
     foreach($features as $feature)
     {
-        $path_to_file = $behatLoc.$localRepo.$feature;
+        $path_to_file = $localRepo.$feature;
         file_put_contents($path_to_file, str_replace("@".$username, "",file_get_contents($path_to_file)));
     }
 }
