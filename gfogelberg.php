@@ -2,7 +2,7 @@
 <?php
 session_start();
 
-if($_SESSION['username'] == NULL)
+if ($_SESSION['username'] == NULL)
     header("Location: http://pherret.local/login.php");
 //Get the branch
 $branch = $_GET['gitBranch'];
@@ -15,7 +15,7 @@ $behatLoc = 'tools/regression/'; //Set to relative path to location of behat.yml
 $localRepo = $behatLoc . 'features/dandb/'; //Set to local repo folder that contains features
 
 //Timestamp for creating HTML file for test results
-$resultsFile = date("YmdHms").".html";
+$resultsFile = date("YmdHms") . ".html";
 
 //Get username
 $username = $_SESSION['username'];
@@ -110,14 +110,13 @@ removeFilterFromFeature($features);
     </div>
 
     <?php
-    if($features != NULL)
-    {
-    echo '<div class="results">';
+    if ($features != NULL) {
+        echo '<div class="results">';
         //Print the output to a file
         writeResultsToFile();
 
         resultsLink();
-    echo '</div>';
+        echo '</div>';
     }
     ?>
 
@@ -126,8 +125,10 @@ removeFilterFromFeature($features);
             <div class="span1">
                 <p>Environment</p>
                 <select class="span1" id="environment" name="environment">
-<!--                    <option --><?php //if ($_GET['environment'] == 'DEV') { ?><!--selected="true" --><?php //}; ?><!--value="DEV">DEV-->
-<!--                    </option>-->
+                    <!--                    <option -->
+                    <?php //if ($_GET['environment'] == 'DEV') { ?><!--selected="true" -->
+                    <?php //}; ?><!--value="DEV">DEV-->
+                    <!--                    </option>-->
                     <option <?php if ($_GET['environment'] == 'QA') { ?>selected="true" <?php }; ?>value="QA">QA
                     </option>
                     <option <?php if ($_GET['environment'] == 'STG') { ?>selected="true" <?php }; ?>value="STG">STG
@@ -183,16 +184,16 @@ removeFilterFromFeature($features);
 function resultsLink()
 {
     global $resultsFile;
-    echo "<a href='".$resultsFile."' target='_blank'>Link to Results</a>";
+    echo "<a href='" . $resultsFile . "' target='_blank'>Link to Results</a>";
 
 }
 
 function writeResultsToFile()
 {
-    global $resultsFile,$output;
-    $fo = fopen($resultsFile,'x');
+    global $resultsFile, $output;
+    $fo = fopen($resultsFile, 'x');
 
-    fwrite($fo,"<!DOCTYPE html><pre>$output</pre>");
+    fwrite($fo, "<!DOCTYPE html><pre>$output</pre>");
     fclose($fo);
 
 }
@@ -208,12 +209,12 @@ function listFolderFiles($dir, $exclude)
                 if (is_dir($dir . '/' . $file)) {
                     echo '<br />
                     <div name="project" id="project">
-                    <strong>'.$file.'</strong>
+                    <strong>' . $file . '</strong>
                     </div>
                     <br />';
                 } else {
                     //Will open GitHub repo location for branch entered
-                    echo '<input type="checkbox" name="feature[]" id="feature" value="'.$folder . '/' .$file.'" >
+                    echo '<input type="checkbox" name="feature[]" id="feature" value="' . $folder . '/' . $file . '" >
                         <a href="' . ltrim($localRepo . $folder . '/' . $file, './') . '"target="_blank">' . $file . '</a><br />';
                 }
                 if (is_dir($dir . '/' . $file)) listFolderFiles($dir . '/' . $file, $exclude);
@@ -224,7 +225,7 @@ function listFolderFiles($dir, $exclude)
 
 function checkmarkValues()
 {
-    if(isset($_GET['feature'])){
+    if (isset($_GET['feature'])) {
         $feature = $_GET['feature'];
         return $feature;
     }
@@ -232,30 +233,28 @@ function checkmarkValues()
 
 function appendFilterToFeature($features)
 {
-    global $localRepo,$username;
+    global $localRepo, $username;
 
-    foreach($features as $feature)
-    {
-        $path_to_file = $localRepo.$feature;
-        file_put_contents($path_to_file, str_replace("@mink:selenium2","@mink:selenium2 @".$username, file_get_contents($path_to_file)));
+    foreach ($features as $feature) {
+        $path_to_file = $localRepo . $feature;
+        file_put_contents($path_to_file, str_replace("@mink:selenium2", "@mink:selenium2 @" . $username, file_get_contents($path_to_file)));
     }
 }
 
 function removeFilterFromFeature($features)
 {
-    global $localRepo,$username;
+    global $localRepo, $username;
 
-    foreach($features as $feature)
-    {
-        $path_to_file = $localRepo.$feature;
-        file_put_contents($path_to_file, str_replace("@".$username, "",file_get_contents($path_to_file)));
+    foreach ($features as $feature) {
+        $path_to_file = $localRepo . $feature;
+        file_put_contents($path_to_file, str_replace("@" . $username, "", file_get_contents($path_to_file)));
     }
 }
 
 function writeExecutionString()
 {
     global $environment, $browser, $username, $local_repo;
-    $executionString = "bin/behat --profile " . $environment . "_". $browser . " --tags @" . $username . " " . $local_repo;
+    $executionString = "bin/behat --profile " . $environment . "_" . $browser . " --tags @" . $username . " " . $local_repo;
 
     return $executionString;
 }
