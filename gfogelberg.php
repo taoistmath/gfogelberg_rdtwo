@@ -37,9 +37,6 @@ $execution = writeExecutionString();
 
 $output = shell_exec("cd " . $behatLoc . " && " . $execution);
 
-//Print the output to a file
-writeResultsToFile();
-
 //Remove username from the selected features
 removeFilterFromFeature($features);
 
@@ -104,9 +101,25 @@ removeFilterFromFeature($features);
 
     <h1>Bootstrap starter template</h1>
 
-    <div class="results">
-        <?php resultsLink(); ?>
+    <div class="controls controls-row">
+        <div class='span1'>
+            <form class="pull-left" id="resetFilter" name="resetFilter" method="GET" action="gfogelberg.php">
+                <button class="btn btn-primary span2 offset4" type="submit">Reset Features</button>
+            </form>
         </div>
+    </div>
+
+    <?php
+    if($features != NULL)
+    {
+    echo '<div class="results">';
+        //Print the output to a file
+        writeResultsToFile();
+
+        resultsLink();
+    echo '</div>';
+    }
+    ?>
 
     <form id="featureFilter" name="featureFilter" method="GET" action="gfogelberg.php">
         <div class="controls controls-row">
@@ -167,6 +180,13 @@ removeFilterFromFeature($features);
 </div>
 
 <?php
+function resultsLink()
+{
+    global $resultsFile;
+    echo "<a href='".$resultsFile."' target='_blank'>Link to Results</a>";
+
+}
+
 function writeResultsToFile()
 {
     global $resultsFile,$output;
@@ -174,13 +194,6 @@ function writeResultsToFile()
 
     fwrite($fo,"<!DOCTYPE html><pre>$output</pre>");
     fclose($fo);
-
-}
-
-function resultsLink()
-{
-    global $resultsFile;
-    echo "<a href='".$resultsFile."' target='_blank'>Link to Results</a>";
 
 }
 
