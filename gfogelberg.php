@@ -4,10 +4,11 @@ session_start();
 
 if ($_SESSION['username'] == NULL)
     header("Location: http://pherret.local/login.php");
-//Get the branch
-$branch = $_GET['gitBranch'];
-if ($branch == NULL)
-    $branch = 'INFRASYS-1913-Stable'; //Set to same branch as repository.
+
+////Get the branch
+//$branch = $_GET['gitBranch'];
+//if ($branch == NULL)
+//    $branch = 'INFRASYS-1913-Stable'; //Set to same branch as repository.
 
 //Set up paths
 //$githubLoc = 'https://github.com/dandb/helios/blob/'.$branch.'/tools/regression/features/dandb'; //Set url to github folder that contains features
@@ -42,7 +43,7 @@ removeFilterFromFeature($features);
 
 ?>
 
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <title>PHERRET</title>
@@ -101,13 +102,11 @@ removeFilterFromFeature($features);
 
     <h1>Bootstrap starter template</h1>
 
-    <div class="controls controls-row">
-        <div class='span1'>
-            <form class="pull-left" id="resetFilter" name="resetFilter" method="GET" action="gfogelberg.php">
-                <button class="btn btn-primary span2 offset4" type="submit">Reset Features</button>
-            </form>
+    <form id="resetFilter" name="resetFilter" method="GET" action="gfogelberg.php">
+        <div class="controls controls-row">
+                <button class="btn btn-primary" type="submit">Reset Features</button>
         </div>
-    </div>
+    </form>
 
     <?php
     if ($features != NULL) {
@@ -121,60 +120,54 @@ removeFilterFromFeature($features);
     ?>
 
     <form id="featureFilter" name="featureFilter" method="GET" action="gfogelberg.php">
-        <div class="controls controls-row">
+
+        <div class="row">
             <div class="span1">
                 <p>Environment</p>
-                <select class="span1" id="environment" name="environment">
-                    <!--                    <option -->
-                    <?php //if ($_GET['environment'] == 'DEV') { ?><!--selected="true" -->
-                    <?php //}; ?><!--value="DEV">DEV-->
-                    <!--                    </option>-->
-                    <option <?php if ($_GET['environment'] == 'QA') { ?>selected="true" <?php }; ?>value="QA">QA
-                    </option>
-                    <option <?php if ($_GET['environment'] == 'STG') { ?>selected="true" <?php }; ?>value="STG">STG
-                    </option>
-                    <option <?php if ($_GET['environment'] == 'PROD') { ?>selected="true" <?php }; ?>value="PROD">PRD
-                    </option>
-                </select>
             </div>
-
-            <div class="span2 offset1">
-                <p>Browser</p>
-                <select class="span2" id="brower" name="browser">
-                    <option <?php if ($_GET['browser'] == 'Firefox') { ?>selected="true" <?php }; ?>value="Firefox">
-                        Firefox
-                    </option>
-                    <option <?php if ($_GET['browser'] == 'Chrome') { ?>selected="true" <?php }; ?>value="Chrome">
-                        Chrome
-                    </option>
-                </select>
-            </div>
-
             <div class="span2">
-                <label>Branch</label>
-                <!--Changing the branch changes where the link points on GitHub.
-                This does not change which files are shown in the table-->
-                <input type="text" value="<?PHP print $branch; ?>" name="gitBranch">
+                <p>Browser</p>
             </div>
         </div>
 
-        <!--    This is for the listFolderFilesTable-->
-        <!--    <table class="table table-hover table-bordered">-->
-        <!--        <thead>-->
-        <!--        <tr>-->
-        <!--            <th></th>-->
-        <!--            <th>Directory</th>-->
-        <!--            <th>Feature</th>-->
-        <!--        </tr>-->
-        <!--        </thead>-->
-        <!--        --><?php
-//        listFolderFilesTable($local_repo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity'));
-//        ?>
-        <!--    </table>-->
+        <div class="controls controls-row">
+            <select class="span1" id="environment" name="environment">
+                <option <?php if ($_GET['environment'] == 'QA') { ?>selected="true" <?php }; ?>value="QA">QA
+                </option>
+                <option <?php if ($_GET['environment'] == 'STG') { ?>selected="true" <?php }; ?>value="STG">STG
+                </option>
+                <option <?php if ($_GET['environment'] == 'PROD') { ?>selected="true" <?php }; ?>value="PROD">PRD
+                </option>
+            </select>
+
+            <select class="span2" id="brower" name="browser">
+                <option <?php if ($_GET['browser'] == 'Firefox') { ?>selected="true" <?php }; ?>value="Firefox">
+                    Firefox
+                </option>
+                <option <?php if ($_GET['browser'] == 'Chrome') { ?>selected="true" <?php }; ?>value="Chrome">
+                    Chrome
+                </option>
+            </select>
+        </div>
+
+<!--            <div class="span2">-->
+<!--                <label>Branch</label>-->
+<!--                <!--Changing the branch changes where the link points on GitHub.-->
+<!--                This does not change which files are shown in the table-->
+<!--                <input type="text" value="--><?PHP //print $branch; ?><!--" name="gitBranch">-->
+<!--            </div>-->
+
+
+            <label><br></label>
+            <button class="btn btn-primary" type="submit">Start Features</button>
+            <label><br></label>
+
         <?php listFolderFiles($localRepo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity')); checkmarkValues()?>
+
         <div class="span2">
-            <label></label>
-            <button class="btn btn-primary span2 offset4" type="submit">Start Features</button>
+            <label><br></label>
+            <button class="btn btn-primary" type="submit">Start Features</button>
+            <label><br></label>
         </div>
     </form>
 
@@ -184,7 +177,11 @@ removeFilterFromFeature($features);
 function resultsLink()
 {
     global $resultsFile;
-    echo "<a href='" . $resultsFile . "' target='_blank'>Link to Results</a>";
+    echo "
+    <h4>
+    <a href='" . $resultsFile . "' target='_blank' style='text-decoration:underline'>Click To See Test Results</a>
+    </h4>
+    ";
 
 }
 
@@ -261,6 +258,19 @@ function writeExecutionString()
 
 ?>
 
+<!--    This is for the listFolderFilesTable-->
+<!--    <table class="table table-hover table-bordered">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th></th>-->
+<!--            <th>Directory</th>-->
+<!--            <th>Feature</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        --><?php
+//        listFolderFilesTable($local_repo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity'));
+//        ?>
+<!--    </table>-->
 <!--function listFolderFilesTable($dir, $exclude)-->
 <!--{-->
 <!--    global $github_loc;-->
