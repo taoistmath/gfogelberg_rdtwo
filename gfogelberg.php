@@ -13,7 +13,8 @@ if ($_SESSION['username'] == NULL)
 //Set up paths
 //$githubLoc = 'https://github.com/dandb/helios/blob/'.$branch.'/tools/regression/features/dandb'; //Set url to github folder that contains features
 $behatLoc = 'tools/regression/'; //Set to relative path to location of behat.yml file
-$localRepo = $behatLoc . 'features/dandb/'; //Set to local repo folder that contains features
+$featureLoc = 'features/dandb/'; //Set to local repo folder that contains features
+$localRepo = $behatLoc . $featureLoc; //Set to local repo folder that contains features
 
 //Timestamp for creating HTML file for test results
 $resultsFile = date("YmdHms") . ".html";
@@ -250,52 +251,13 @@ function removeFilterFromFeature($features)
 
 function writeExecutionString()
 {
-    global $environment, $browser, $username, $local_repo;
-    $executionString = "bin/behat --profile " . $environment . "_" . $browser . " --tags @" . $username . " " . $local_repo;
+    global $environment, $browser, $username, $featureLoc;
+    $executionString = "bin/behat --profile " . $environment . "_" . $browser . " --tags @" . $username . " " . $featureLoc;
 
     return $executionString;
 }
 
 ?>
-
-<!--    This is for the listFolderFilesTable-->
-<!--    <table class="table table-hover table-bordered">-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th></th>-->
-<!--            <th>Directory</th>-->
-<!--            <th>Feature</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        --><?php
-//        listFolderFilesTable($local_repo, array('index.php', 'edit_page.php', 'pages', 'full', 'sanity'));
-//        ?>
-<!--    </table>-->
-<!--function listFolderFilesTable($dir, $exclude)-->
-<!--{-->
-<!--    global $github_loc;-->
-<!--    $files = scandir($dir);-->
-<!--    $folder = end(explode('/', $dir));-->
-<!--    echo '<tr class="trth">';-->
-<!--    foreach ($files as $file) {-->
-<!--        if (is_array($exclude) and !in_array($file, $exclude)) {-->
-<!--            if ($file != '.' && $file != '..') {-->
-<!--                if (!is_dir($dir.'/'.$file)) {-->
-<!--                    echo '<tr><th>-->
-<!--                        <label class="checkbox">-->
-<!--                            <input type="checkbox" name="checkbox" formmethod="post">-->
-<!--                        </label>-->
-<!--                        </th>';-->
-<!--                    echo '<th>'.$folder.'</th><th><a href="'.ltrim($github_loc.'/'.$folder.'/'.$file, './').'">'.$file.'</a>'; //Will open GitHub repo location for branch entered-->
-<!--//                    echo '<th>'.$folder.'</th><th><a href="path=/'.ltrim($dir.'/'.$file, './').'">'.$file.'</a>'; //Will open-->
-<!--                }-->
-<!--                if (is_dir($dir.'/'.$file)) listFolderFiles($dir.'/'.$file, $exclude);-->
-<!--                echo '</th></tr>';-->
-<!--            }-->
-<!--        }-->
-<!--    }-->
-<!--    echo '</tr>';-->
-<!--}-->
 
 <!-- /container -->
 
